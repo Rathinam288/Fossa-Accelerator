@@ -27,3 +27,5 @@ jobs:
             -e SONAR_LOGIN="$SONAR_TOKEN" \
             -v "${{ github.workspace }}:/usr/src" \
             sonarsource/sonar-scanner-cli
+
+            
