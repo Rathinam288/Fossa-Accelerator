@@ -2,30 +2,25 @@ name: SonarQube Scan
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   sonar:
-    name: SonarQube analysis
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run SonarQube scan (Dockerized scanner)
+      - name: Run Sonar Scanner
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          if [ -z "$SONAR_HOST_URL" ] || [ -z "$SONAR_TOKEN" ]; then
-            echo "SONAR_HOST_URL and SONAR_TOKEN must be set as repository secrets";
-            exit 1;
-          fi
           docker run --rm \
-            -e SONAR_HOST_URL="$SONAR_HOST_URL" \
-            -e SONAR_LOGIN="$SONAR_TOKEN" \
+            -e SONAR_HOST_URL=http://localhost:9000 \
+            -e SONAR_LOGIN=$SONAR_TOKEN \
             -v "${{ github.workspace }}:/usr/src" \
-            sonarsource/sonar-scanner-cli
-
-            
+            sonarsource/sonar-scanner-cli \
+            -Dsonar.projectKey=myproject \
+            -Dsonar.organization=myorg
