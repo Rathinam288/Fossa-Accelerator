@@ -1,0 +1,26 @@
+name: FOSSA Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  fossa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run FOSSA analyze
+        uses: fossa/fossa-action@v1
+        with:
+          api_key: ${{ secrets.FOSSA_API_KEY }}
+          args: analyze
+
+      - name: (Optional) Run FOSSA test
+        if: always()
+        uses: fossa/fossa-action@v1
+        with:
+          api_key: ${{ secrets.FOSSA_API_KEY }}
+          args: test
